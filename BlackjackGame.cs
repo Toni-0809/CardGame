@@ -9,12 +9,14 @@ namespace CardGame {
         {
 
             private const int WinScore = 21;//победнный счет
-            private const int StopScore = 17;// счет, при котором дилер останавливается
+            //private const int StopScore = 17;// счет, при котором дилер останавливается
             private List<Card> deck; //список  для хранения колоды карт
             private Player player;
             private Player dealer;// 2 класса для игрока и дилера
 
-            public void Start()
+        public List<Card> Deck { get => deck; set => deck = value; }
+
+        public void Start()
             {
                 InitializeGame();
 
@@ -31,7 +33,7 @@ namespace CardGame {
             {
             // Инициализируем колоду карт
             //InitializeDeck();
-            deck = CreateDeck();
+            Deck = CreateDeck();
             // Перемешиваем колоду
             ShuffleDeck();
 
@@ -59,20 +61,20 @@ namespace CardGame {
 
         public void ShuffleDeck()
         {
-            if (deck == null || deck.Count == 0)
+            if (Deck == null || Deck.Count == 0)
             {
                 throw new InvalidOperationException("Cannot shuffle an empty or null deck.");
             }
 
             Random rng = new Random();
-            int n = deck.Count;
+            int n = Deck.Count;
             while (n > 1)
             {
                 int k = rng.Next(n--);
                 // Меняем местами
-                var temp = deck[n];
-                deck[n] = deck[k];
-                deck[k] = temp;
+                var temp = Deck[n];
+                Deck[n] = Deck[k];
+                Deck[k] = temp;
             }
         }
 
@@ -88,10 +90,10 @@ namespace CardGame {
                 Console.WriteLine($"Dealer's Showing Card: {dealer.Cards[0]}");
             }
 
-            private Card DrawCard() // берет первую карту из колоды (индекс 0) и убирает её из колоды, возвращая её.
+            public Card DrawCard() // берет первую карту из колоды (индекс 0) и убирает её из колоды, возвращая её.
             {
-                Card card = deck[0];
-                deck.RemoveAt(0);
+                Card card = Deck[0];
+                Deck.RemoveAt(0);
                 return card;
             }
 
@@ -115,19 +117,48 @@ namespace CardGame {
 
                 Console.WriteLine($"{player.Name}'s Final Score: {player.Score}");
             }
+        public int CalculateScore(List<Card> cards)
+        {
+            int score = 0;
+            int aceCount = 0;
 
-            private void DealerTurn()
+            foreach (var card in cards)
             {
-                while (dealer.Score < StopScore)
+                if (int.TryParse(card.Rank, out int cardValue))
                 {
-                    dealer.AddCard(DrawCard());
-                    Console.WriteLine($"{dealer.Name} draws: {dealer.Cards[^1]}");
+                    score += cardValue;
                 }
-
-                Console.WriteLine($"{dealer.Name}'s Final Score: {dealer.Score}");
+                else if (card.Rank == "A")
+                {
+                    score += 11;
+                    aceCount++;
+                }
+                else
+                {
+                    score += 10; // J, Q, K
+                }
             }
 
-            private void DetermineWin()
+            while (score > 21 && aceCount > 0)
+            {
+                score -= 10; // Adjust for Aces
+                aceCount--;
+            }
+
+            return score;
+        }
+        private void DealerTurn()
+        {
+            while (dealer.Score < 17)
+            {
+                dealer.AddCard(DrawCard());
+                Console.WriteLine($"{dealer.Name} draws: {dealer.Cards[^1]}");
+            }
+
+            Console.WriteLine($"{dealer.Name}'s Final Score: {dealer.Score}");
+        }
+
+        private void DetermineWin()
             {
                 if (player.Score > WinScore)
                     Console.WriteLine("Player busts! Dealer wins!");

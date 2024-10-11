@@ -12,7 +12,7 @@ namespace CardGame
         {
             public string Name { get; }
             public List<Card> Cards { get; }
-            public int Score => CalculateScore();
+            public int Score => CalculateScore(Cards);
 
             public Player(string name)
             {
@@ -25,12 +25,12 @@ namespace CardGame
                 Cards.Add(card);
             }
 
-            private int CalculateScore()
+            public int CalculateScore(List<Card> cards)
             {
                 int score = 0;
                 int aceCount = 0;
 
-                foreach (var card in Cards)
+                foreach (var card in cards)
                 {
                     if (int.TryParse(card.Rank, out int cardValue))
                     {

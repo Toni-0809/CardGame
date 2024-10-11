@@ -10,8 +10,15 @@ namespace CardGame
     {
         static void Main()
         {
-            BlackjackGame game = new BlackjackGame();
-            game.Start();
+            //BlackjackGame game = new BlackjackGame();
+            //game.Start();
+
+            MonteCarloSelectStrategy monte = new MonteCarloSelectStrategy();
+            monte.engine = new BlackjackGame();
+            monte.engine.InitializeGame();
+            monte.strategy = new AgressiveDealerStrategy();
+
+            Console.WriteLine(monte.AnalizeMonteCarlo(16));
         }
     }
 }
