@@ -16,9 +16,9 @@ namespace CardGame
             MonteCarloSelectStrategy monte = new MonteCarloSelectStrategy();
             monte.engine = new BlackjackGame();
             monte.engine.InitializeGame();
-            monte.strategy = new AgressiveDealerStrategy();
+            monte.strategy = new DefenciveDealerStrategy();
 
-            Console.WriteLine(monte.AnalizeMonteCarlo(16));
+            Console.WriteLine(monte.AnalizeMonteCarlo(18));
         }
     }
 }
