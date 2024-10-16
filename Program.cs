@@ -10,7 +10,7 @@ namespace CardGame
     {
         static void Main()
         {
-            const int ITERATIONS_COUNT = 10000;
+            const int ITERATIONS_COUNT = 1000;
             int playerWins = 0;
             for (int i = 0; i < ITERATIONS_COUNT; i++)
             {
