@@ -42,7 +42,7 @@ namespace CardGame
         public bool Select(int Score)
         {
 
-            Console.WriteLine("Dealer's Turn:");
+           
 
             while (Score < 15)
             {
@@ -64,6 +64,7 @@ namespace CardGame
 
         public bool Select(int Score)
         {
+           
 
             while (Score < 17)
             {
@@ -78,24 +79,24 @@ namespace CardGame
 
 public class MonteCarloSelectStrategy : ISelectionStrategy
 {
+    private const int NUMBER_OF_ITERATIONS = 1000;
     public ISelectionStrategy strategy;
     public BlackjackGame engine;
     bool ISelectionStrategy.Select(int Score)
     {
-        return AnalizeMonteCarlo(Score) > 70;
+        return AnalizeMonteCarlo(Score) <= NUMBER_OF_ITERATIONS*0.7;
     }
 
     public int AnalizeMonteCarlo(int score)
     {
-       
-        int numberOfIterations = 10000;
-
         int monteCarloWins = 0;
 
 
-        for (int i = 0; i < numberOfIterations; i++)
+        for (int i = 0; i < NUMBER_OF_ITERATIONS; i++)
         {
-            Console.WriteLine($"Iteration: {i + 1}");
+
+            //Console.WriteLine($"monte game {i + 1}\n monte score {score}");
+            //Console.WriteLine($"Iteration: {i + 1}");
             List<Card> deckCopy = new List<Card>();
             engine.ShuffleDeck();
             engine.Deck.ForEach(
@@ -106,18 +107,18 @@ public class MonteCarloSelectStrategy : ISelectionStrategy
             while (strategy.Select(dealerScore))
             {
                 dealerCards.Add(deckCopy[0]);
+                //Console.WriteLine(string.Join(",",dealerCards.Select(x=>x.Suit+x.Rank)));
                 deckCopy.RemoveAt(0);
                 dealerScore = engine.CalculateScore(dealerCards);
 
             }
-            Console.WriteLine($"Dealer Score: {dealerScore}, monteCarloWins: {monteCarloWins}");
-            Console.WriteLine($"Remaining cards: {deckCopy.Count}");
 
 
             if (dealerScore > 21 || dealerScore <= score)
             {
                 monteCarloWins++;
             }
+            //Console.WriteLine($"Dealer Score: {dealerScore}, monteCarloWins: {monteCarloWins}");
             
         }
 
