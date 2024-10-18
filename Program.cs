@@ -10,15 +10,15 @@ namespace CardGame
     {
         static void Main()
         {
-            const int ITERATIONS_COUNT = 1000;
+            const int ITERATIONS_COUNT = 10000;
             int playerWins = 0;
-            for (int i = 0; i < ITERATIONS_COUNT; i++)
+            Parallel.For(0, ITERATIONS_COUNT, (i) =>
             {
-                Console.WriteLine($"game {i+1} first wins:{playerWins}");
+                Console.WriteLine($"game {i + 1} first wins:{playerWins}");
                 BlackjackGame game = new BlackjackGame();
-                game.Start(new MonteCarloSelectStrategy(), new AgressiveDealerStrategy());
+                game.Start(new MonteCarloSelectStrategy(), new DealerStrategy());
                 playerWins += Convert.ToInt32(game.PlayerWins);
-            }
+            });
             Console.WriteLine($"{((double)playerWins/ITERATIONS_COUNT) *100} %");
 
 
