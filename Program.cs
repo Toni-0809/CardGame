@@ -10,7 +10,7 @@ namespace CardGame
     {
         static void Main()
         {
-            const int ITERATIONS_COUNT = 10000;
+            const int ITERATIONS_COUNT = 1000;
             int playerWins = 0;
             Parallel.For(0, ITERATIONS_COUNT, (i) =>
             {

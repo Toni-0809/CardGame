@@ -103,40 +103,47 @@ namespace CardGame
 
         public int AnalizeMonteCarlo(int score)
         {
-            int monteCarloWins = 0;
+            int  monteCarloWins = 0;
+            
+            int[] results = new int[Environment.ProcessorCount]; // Массив для хранения выигрышей от каждой задачи
+            object lockObj = new object(); // Для синхронизации доступа к monteCarloWins
 
 
-            for (int i = 0; i < NUMBER_OF_ITERATIONS; i++)
-            {
+            Parallel.For(0, NUMBER_OF_ITERATIONS, (i) =>
+           {
 
-                //Console.WriteLine($"monte game {i + 1}\n monte score {score}");
-                //Console.WriteLine($"Iteration: {i + 1}");
-                List<Card> deckCopy = new List<Card>();
-                engine.ShuffleDeck();
-                engine.Deck.ForEach(
-                    x => deckCopy.Add(new Card(x.Suit, x.Rank)));
-                int dealerScore = 0;
+               //Console.WriteLine($"monte game {i + 1}\n monte score {score}");
+               //Console.WriteLine($"Iteration: {i + 1}");
+               List<Card> deckCopy = new List<Card>();
+               lock (engine) 
+               {
+                   deckCopy = new List<Card>(engine.Deck); // Копируем колоду
+                   engine.ShuffleDeck();
+               }
+               int dealerScore = 0;
 
-                List<Card> dealerCards = new List<Card>();
-                while (strategy.Select(dealerScore))
-                {
-                    dealerCards.Add(deckCopy[0]);
-                    //Console.WriteLine(string.Join(",",dealerCards.Select(x=>x.Suit+x.Rank)));
-                    deckCopy.RemoveAt(0);
-                    dealerScore = engine.CalculateScore(dealerCards);
+               List<Card> dealerCards = new List<Card>();
+               while (dealerScore < 17)
+               {
+                   dealerCards.Add(deckCopy[0]);
+                   //Console.WriteLine(string.Join(",",dealerCards.Select(x=>x.Suit+x.Rank)));
+                   deckCopy.RemoveAt(0);
+                   dealerScore = engine.CalculateScore(dealerCards);
 
-                }
+               }
 
 
-                if (dealerScore > 21 || dealerScore < score)
-                {
-                    monteCarloWins++;
-                }
-                //Console.WriteLine($"Dealer Score: {dealerScore}, monteCarloWins: {monteCarloWins}");
+               if (dealerScore > 21 || dealerScore < score)
+               {
+                   lock (lockObj)
+                   {
+                       monteCarloWins++;
+                   }
+               }
+           });
 
-            }
+            return monteCarloWins; 
 
-            return monteCarloWins;
 
         }
 
