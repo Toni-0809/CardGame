@@ -14,7 +14,6 @@ namespace CardGame
         string Print();
     }
 
-
     public class RandomStrategy : ISelectionStrategy
     {
         public string Print()
@@ -27,13 +26,8 @@ namespace CardGame
             Random random = new Random();
            
                 return random.Next(1, 10) % 2 == 0;
-            
-           
-
         }
-
     }
-
 
     public class DealerStrategy : ISelectionStrategy
     {
@@ -50,9 +44,9 @@ namespace CardGame
                 return true;
             }
             return false;
-
         }
     }
+
     public class DefenciveStrategy : ISelectionStrategy
     {
         public string Print()
@@ -68,9 +62,9 @@ namespace CardGame
                 return false;
             }
             return true;
-
         }
     }
+
     public class AgressiveStrategy : ISelectionStrategy
     {
         public string Print()
@@ -89,7 +83,6 @@ namespace CardGame
         }
                 
     }
-
 
     public class MonteCarloSelectStrategy : ISelectionStrategy
     {
@@ -110,8 +103,8 @@ namespace CardGame
 
 
             Parallel.For(0, NUMBER_OF_ITERATIONS, (i) =>
-           {
-
+            {
+           
                //Console.WriteLine($"monte game {i + 1}\n monte score {score}");
                //Console.WriteLine($"Iteration: {i + 1}");
                List<Card> deckCopy = new List<Card>();
@@ -143,8 +136,6 @@ namespace CardGame
            });
 
             return monteCarloWins; 
-
-
         }
 
         string ISelectionStrategy.Print()
